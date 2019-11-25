@@ -51,7 +51,7 @@ def cli(url, count, threshold, session, summary, verbose):
 
         global times
         
-        if not summary and not times:
+        if not summary or not times:
             return
 
         table = [
@@ -62,6 +62,7 @@ def cli(url, count, threshold, session, summary, verbose):
             ]
         ]
 
+        print()
         print(tabulate(
             table,
             headers=['# Reqs', 'Median (sec)', 'Average (sec)'],
