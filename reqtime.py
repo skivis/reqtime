@@ -1,11 +1,11 @@
 import logging
-
-from timeit import default_timer as timer
 from statistics import median, mean
+from timeit import default_timer as timer
 
 import click
 import requests
 from tabulate import tabulate
+
 
 times = []
 
@@ -16,8 +16,8 @@ def do_request(http, url: str, threshold: int) -> None:
     response = http.get(url)
     elapsed = response.elapsed.total_seconds()
     times.append(elapsed)
-    cls = 'green' if int(elapsed * 1000) <= threshold else 'red'
-    click.echo(click.style(f'{elapsed:.4f}', fg=cls))
+    clr = 'green' if int(elapsed * 1000) <= threshold else 'red'
+    click.echo(click.style(f'{elapsed:.4f}', fg=clr))
 
 
 @click.command()
