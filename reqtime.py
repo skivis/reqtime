@@ -1,5 +1,6 @@
 import logging
-from datetime import datetime
+
+from timeit import default_timer as timer
 from statistics import median, mean
 
 import click
@@ -37,6 +38,7 @@ def cli(url, count, threshold, session, summary, verbose):
         http = requests
     
     try:
+        start = timer()
         if count > 0:
             for i in range(count):
                 do_request(http, url, threshold)
@@ -46,6 +48,7 @@ def cli(url, count, threshold, session, summary, verbose):
     except KeyboardInterrupt:
         pass
     finally:
+        end = timer()
         if hasattr(http, 'close'):
             http.close()
 
@@ -58,14 +61,15 @@ def cli(url, count, threshold, session, summary, verbose):
             [
                 len(times),
                 round(median(times), 4),
-                round(mean(times), 4)
+                round(mean(times), 4),
+                round(end - start, 4)
             ]
         ]
 
         print()
         print(tabulate(
             table,
-            headers=['# Reqs', 'Median (sec)', 'Average (sec)'],
+            headers=['# Reqs', 'Median (sec)', 'Average (sec)', 'Total time'],
             tablefmt='psql'))
     
 
