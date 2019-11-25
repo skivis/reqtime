@@ -13,5 +13,6 @@ $ pip install git+https://github.com/skivis/reqtime.git
 
 ## Usage
 ```sh
-reqtime --help
+$ reqtime --help
+$ reqtime --summary http://example.com
 ```
