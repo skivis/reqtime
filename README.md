@@ -1,5 +1,5 @@
 # Reqtime
-Simple script for measuring (GET) request durations
+Simple script for measuring (GET) request durations and get the median and average numbers.
 
 ## Prerequisite
 
