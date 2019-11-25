@@ -1,3 +1,6 @@
+# Reqtime
+Simple script for measuring (GET) request durations
+
 ## Prerequisite
 
 Python 3.6+ installed
