@@ -24,8 +24,9 @@ def do_request(http, url: str, threshold: int) -> None:
 @click.option('--count', default=0, type=int, help='number of requests')
 @click.option('--threshold', default=300, type=int, help='number of requests')
 @click.option('--session', is_flag=True, help='Use same http session for all requests')
+@click.option('--summary', is_flag=True, help='Output summary when stopped')
 @click.option('--verbose', is_flag=True, help='Output more than nessecary')
-def cli(url, count, threshold, session, verbose):
+def cli(url, count, threshold, session, summary, verbose):
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger("urllib3").setLevel(logging.DEBUG)
@@ -49,20 +50,22 @@ def cli(url, count, threshold, session, verbose):
             http.close()
 
         global times
+        
+        if not summary and not times:
+            return
 
-        if times:
-            table = [
-                [
-                    len(times),
-                    round(median(times), 4),
-                    round(mean(times), 4)
-                ]
+        table = [
+            [
+                len(times),
+                round(median(times), 4),
+                round(mean(times), 4)
             ]
+        ]
 
-            print(tabulate(
-                table,
-                headers=['# Reqs', 'Median (sec)', 'Average (sec)'],
-                tablefmt='psql'))
+        print(tabulate(
+            table,
+            headers=['# Reqs', 'Median (sec)', 'Average (sec)'],
+            tablefmt='psql'))
     
 
 if __name__ == '__main__':
