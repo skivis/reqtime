@@ -1,34 +1,19 @@
 from statistics import median, mean
-from timeit import default_timer as timer
+from timeit import default_timer
 
-import click
 import requests
+from click import command, option, argument, style, echo
 from tabulate import tabulate
 
 
-times = []
 
-
-def do_request(http, url: str, threshold: int) -> None:
-    global times
-
-    response = http.get(url)
-    elapsed = response.elapsed.total_seconds()
-    times.append(elapsed)
-    output = f'{elapsed:.4f}'
-    if threshold > 0:
-        color = 'green' if int(elapsed * 1000) <= threshold else 'red'
-        output = click.style(output, fg=color)
-    click.echo(output)
-
-
-@click.command()
-@click.option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
-@click.option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
-@click.option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
-@click.option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
-@click.option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
-@click.argument('url')
+@command()
+@option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
+@option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
+@option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
+@option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
+@option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
+@argument('url')
 def cli(count, threshold, persistent, summary, verbose, url):
     if verbose:
         import logging
@@ -41,11 +26,21 @@ def cli(count, threshold, persistent, summary, verbose, url):
     else:
         http = requests
     
+    times = []
+    
     try:
-        start = timer()
+        start = default_timer()
         index = count
         while True:
-            do_request(http, url, threshold)
+            response = http.get(url)
+            elapsed = response.elapsed.total_seconds()
+            times.append(elapsed)
+            output = f'{elapsed:.4f}'
+            if threshold > 0:
+                color = 'green' if int(elapsed * 1000) <= threshold else 'red'
+                output = style(output, fg=color)
+            echo(output)
+            
             if count == 0:
                 continue
             index -= 1
@@ -54,11 +49,9 @@ def cli(count, threshold, persistent, summary, verbose, url):
     except KeyboardInterrupt:
         pass
     finally:
-        end = timer()
+        end = default_timer()
         if hasattr(http, 'close'):
             http.close()
-
-        global times
         
         if not summary or not times:
             return
