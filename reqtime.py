@@ -26,21 +26,21 @@ def cli(count, threshold, persistent, summary, verbose, url):
     else:
         http = requests
     
-    times = []
+    durations = []
     
     try:
         start = default_timer()
         index = count
         while True:
             response = http.get(url)
-            elapsed = response.elapsed.total_seconds()
+            elapsed = response.elapsed.total_seconds() * 1000
             status = response.status_code
-            times.append(elapsed)
-            output = f'{elapsed:.4f}'
+            durations.append(elapsed)
+            output = f'{elapsed:.2f}'
             if threshold > 0:
-                color = 'bright_green' if int(elapsed * 1000) <= threshold else 'bright_red'
+                color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
                 output = style(output, fg=color)
-            echo(f'{output} ({style(str(status), fg="bright_black")})')
+            echo(f'({style(str(status), fg="bright_black")}) :: {output}')
             
             if count == 0:
                 continue
@@ -54,16 +54,16 @@ def cli(count, threshold, persistent, summary, verbose, url):
         if hasattr(http, 'close'):
             http.close()
         
-        if not summary or not times:
+        if not summary or not durations:
             return
 
         table = [
-            ['# Reqs','Median (sec)', 'Average (sec)', 'Total time'],
+            ['# Reqs','Median (ms)', 'Average (ms)', 'Runtime (sec)'],
             [
-                len(times),
-                round(median(times), 4),
-                round(mean(times), 4),
-                round(end - start, 4)
+                len(durations),
+                round(median(durations), 2),
+                round(mean(durations), 2),
+                round(end - start, 2)
             ]
         ]
 
