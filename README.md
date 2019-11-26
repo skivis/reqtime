@@ -15,6 +15,7 @@ $ pip install git+https://github.com/skivis/reqtime.git
 ```sh
 $ reqtime --help
 $ reqtime --summary http://example.com
+$ reqtime -c20 -t300 -s http://example.com
 ```
 
 ## Uninstall
