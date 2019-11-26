@@ -17,8 +17,8 @@ def do_request(http, url: str, threshold: int) -> None:
     times.append(elapsed)
     output = f'{elapsed:.4f}'
     if threshold > 0:
-        clr = 'green' if int(elapsed * 1000) <= threshold else 'red'
-        output = click.style(output, fg=clr)
+        color = 'green' if int(elapsed * 1000) <= threshold else 'red'
+        output = click.style(output, fg=color)
     click.echo(output)
 
 
