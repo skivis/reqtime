@@ -29,8 +29,10 @@ def do_request(http, url: str, threshold: int) -> None:
 @click.option('-v', '--verbose', '-v', is_flag=True, help='Turn on DEBUG logging')
 def cli(url, count, threshold, persistent, summary, verbose):
     if verbose:
+        import logging
         logging.basicConfig(level=logging.DEBUG)
-        logging.getLogger("urllib3").setLevel(logging.DEBUG)
+        for package in ['urllib3', 'requests']:
+            logging.getLogger(package).setLevel(logging.DEBUG)
 
     if session:
         http = requests.Session()
