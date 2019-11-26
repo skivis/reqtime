@@ -25,7 +25,7 @@ def do_request(http, url: str, threshold: int) -> None:
 @click.option('-t', '--threshold', default=300, type=int, help='Threshold in ms for marking a request as slow')
 @click.option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
 @click.option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
-@click.option('-v', '--verbose', '-v', is_flag=True, help='Turn on DEBUG logging')
+@click.option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
 def cli(url, count, threshold, persistent, summary, verbose):
     if verbose:
         import logging
