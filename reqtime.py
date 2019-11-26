@@ -33,7 +33,7 @@ def cli(url, count, threshold, persistent, summary, verbose):
         for package in ['urllib3', 'requests']:
             logging.getLogger(package).setLevel(logging.DEBUG)
 
-    if session:
+    if persistent:
         http = requests.Session()
     else:
         http = requests
