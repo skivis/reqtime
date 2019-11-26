@@ -61,7 +61,7 @@ def cli(count, threshold, persistent, summary, verbose, url):
             return
 
         table = [
-            ['# Reqs','Median (ms)', 'Average (ms)', 'Runtime (sec)'],
+            ['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
             [
                 len(durations),
                 round(median(durations), 2),
