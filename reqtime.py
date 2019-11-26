@@ -1,4 +1,3 @@
-import logging
 from statistics import median, mean
 from timeit import default_timer as timer
 
@@ -41,12 +40,14 @@ def cli(url, count, threshold, persistent, summary, verbose):
     
     try:
         start = timer()
-        if count > 0:
-            for i in range(count):
-                do_request(http, url, threshold)
-        else:
-            while True:
-                do_request(http, url, threshold)
+        index = count
+        while True:
+            do_request(http, url, threshold)
+            if count == 0:
+                continue
+            index -= 1
+            if index == 0:
+                break
     except KeyboardInterrupt:
         pass
     finally:
