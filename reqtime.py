@@ -15,13 +15,16 @@ def do_request(http, url: str, threshold: int) -> None:
     response = http.get(url)
     elapsed = response.elapsed.total_seconds()
     times.append(elapsed)
-    clr = 'green' if int(elapsed * 1000) <= threshold else 'red'
-    click.echo(click.style(f'{elapsed:.4f}', fg=clr))
+    output = f'{elapsed:.4f}'
+    if threshold > 0:
+        clr = 'green' if int(elapsed * 1000) <= threshold else 'red'
+        output = click.style(output, fg=clr)
+    click.echo(output)
 
 
 @click.command()
 @click.option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
-@click.option('-t', '--threshold', default=300, type=int, help='Threshold in ms for marking a request as slow')
+@click.option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
 @click.option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
 @click.option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
 @click.option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
