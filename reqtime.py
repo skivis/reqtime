@@ -36,11 +36,12 @@ def cli(count, threshold, persistent, summary, verbose, url):
             elapsed = response.elapsed.total_seconds() * 1000
             status = response.status_code
             durations.append(elapsed)
-            output = f'{elapsed:.2f}'
+            output = f'{elapsed:^13.2f}'
             if threshold > 0:
                 color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
                 output = style(output, fg=color)
-            echo(f'({style(str(status), fg="bright_black")}) {output:^13}')
+            
+            echo(f'({style(str(status), fg="bright_black")}) {output}')
             
             if count == 0:
                 continue
