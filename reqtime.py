@@ -61,6 +61,7 @@ def cli(count, threshold, persistent, summary, verbose, url):
             return
 
         table = [
+            ['# Reqs','Median (sec)', 'Average (sec)', 'Total time'],
             [
                 len(times),
                 round(median(times), 4),
@@ -70,10 +71,7 @@ def cli(count, threshold, persistent, summary, verbose, url):
         ]
 
         print()
-        print(tabulate(
-            table,
-            headers=['# Reqs', 'Median (sec)', 'Average (sec)', 'Total time'],
-            tablefmt='psql'))
+        print(tabulate(table, tablefmt='psql', headers="firstrow"))
     
 
 if __name__ == '__main__':
