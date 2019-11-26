@@ -38,7 +38,7 @@ def cli(count, threshold, persistent, summary, verbose, url):
             times.append(elapsed)
             output = f'{elapsed:.4f}'
             if threshold > 0:
-                color = 'green' if int(elapsed * 1000) <= threshold else 'red'
+                color = 'bright_green' if int(elapsed * 1000) <= threshold else 'bright_red'
                 output = style(output, fg=color)
             echo(f'{output} ({style(str(status), fg="bright_black")})')
             
