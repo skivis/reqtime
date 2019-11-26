@@ -40,7 +40,7 @@ def cli(count, threshold, persistent, summary, verbose, url):
             if threshold > 0:
                 color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
                 output = style(output, fg=color)
-            echo(f'({style(str(status), fg="bright_black")}) :: {output}')
+            echo(f'({style(str(status), fg="bright_black")}) {output:^13}')
             
             if count == 0:
                 continue
