@@ -30,7 +30,7 @@ def parse_args(args):
     except ValueError:
         method = 'GET'
         url = args[0]
-    return method, url
+    return method.lower(), url
 
 
 @command()
@@ -56,7 +56,7 @@ def cli(args, count, threshold, persistent, summary, verbose):
         http = requests
     
     try:
-        func = getattr(http, method.lower())
+        func = getattr(http, method)
         index = count
         start = timer()
         while True:
