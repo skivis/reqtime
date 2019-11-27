@@ -1,22 +1,12 @@
-from datetime import datetime
 from statistics import median, mean
 from timeit import default_timer as timer
 
 import requests
-from click import command, option, argument, style, echo, UsageError
+from click import UsageError, command, option, argument, style, echo
 from tabulate import tabulate
 
 
 SUPPORTED_HTTP_METHODS = ['GET', 'POST']
-
-
-def log(status: int, elapsed: float, threshold: int):
-    output = f'{elapsed:9.2f}'
-    if threshold > 0:
-        color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
-        output = style(output, fg=color)
-
-    echo(f'({style(str(status), fg="bright_black")}) {output} {style("ms", fg="bright_black")}')
 
 
 def parse_args(args):
@@ -30,6 +20,15 @@ def parse_args(args):
         method = 'GET'
         url = args[0]
     return method.lower(), url
+
+
+def println(status: int, elapsed: float, threshold: int):
+    output = f'{elapsed:9.2f}'
+    if threshold > 0:
+        color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
+        output = style(output, fg=color)
+
+    echo(f'({style(str(status), fg="bright_black")}) {output} {style("ms", fg="bright_black")}')
 
 
 def print_summary(title, durations, runtime):
@@ -74,7 +73,7 @@ def cli(args, count, threshold, persistent, summary, verbose):
             elapsed = r.elapsed.total_seconds() * 1000
             durations.append(elapsed)
             
-            log(r.status_code, elapsed, threshold)
+            println(r.status_code, elapsed, threshold)
             
             if count == 0:
                 continue
