@@ -15,8 +15,7 @@ def log(status: int, elapsed: float, threshold: int):
     if threshold > 0:
         color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
         output = style(output, fg=color)
-    
-    # now = datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f]')[:-4]
+
     echo(f'({style(str(status), fg="bright_black")}) {output} {style("ms", fg="bright_black")}')
 
 
