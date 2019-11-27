@@ -19,13 +19,14 @@ def log(status: int, elapsed: float, threshold: int):
 
 
 @command()
-@argument('args', nargs=-1)
+@argument('args', nargs=-1, metavar='<METHOD> <URL>')
 @option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
 @option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
 @option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
 @option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
 def cli(args, count, threshold, persistent, summary, verbose):
+    """Utility for measuring response times for http endpoints"""
     if not args or len(args) > 2:
         raise UsageError('Incorrect argument, either specify <METHOD> <url> or just <url>')
 
