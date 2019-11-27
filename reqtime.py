@@ -91,7 +91,8 @@ def cli(args, count, threshold, persistent, summary, verbose):
         if not summary or not durations:
             return
 
-        print_summary(url, durations, end - start)
+        runtime = end - start
+        print_summary(url, durations, runtime)
     
 
 if __name__ == '__main__':
