@@ -63,11 +63,7 @@ def cli(args, count, threshold, persistent, summary, verbose):
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
-    if persistent:
-        http = requests.Session()
-    else:
-        http = requests
-    
+    http = requests.Session() if persistent else requests
     try:
         func = getattr(http, method)
         index = count
