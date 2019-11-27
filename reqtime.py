@@ -1,3 +1,4 @@
+from datetime import datetime
 from statistics import median, mean
 from timeit import default_timer as timer
 
@@ -15,7 +16,21 @@ def log(status: int, elapsed: float, threshold: int):
         color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
         output = style(output, fg=color)
     
-    echo(f'({style(str(status), fg="bright_black")}) {output}')
+    # now = datetime.now().strftime('[%Y-%m-%d %H:%M:%S.%f]')[:-4]
+    echo(f'({style(str(status), fg="bright_black")}) {output} {style("ms", fg="bright_black")}')
+
+
+def parse_args(args):
+    if not args or len(args) > 2:
+        raise UsageError('Incorrect arguments, either specify <METHOD> <url> or just <url>')
+    try:
+        method, url = args
+        if method not in SUPPORTED_HTTP_METHODS:
+            raise UsageError(f'Unsupported HTTP method: {method}')
+    except ValueError:
+        method = 'GET'
+        url = args[0]
+    return method, url
 
 
 @command()
@@ -27,16 +42,8 @@ def log(status: int, elapsed: float, threshold: int):
 @option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
 def cli(args, count, threshold, persistent, summary, verbose):
     """Utility for measuring response times for http endpoints"""
-    if not args or len(args) > 2:
-        raise UsageError('Incorrect argument, either specify <METHOD> <url> or just <url>')
-
-    try:
-        method, url = args
-        if method not in SUPPORTED_HTTP_METHODS:
-            raise UsageError(f'Unsupported HTTP method: {method}')
-    except ValueError:
-        method = 'GET'
-        url = args[0]
+    method, url = parse_args(args)
+    durations = []
     
     if verbose:
         import logging
@@ -48,12 +55,10 @@ def cli(args, count, threshold, persistent, summary, verbose):
     else:
         http = requests
     
-    durations = []
-    
     try:
         func = getattr(http, method.lower())
-        start = timer()
         index = count
+        start = timer()
         while True:
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
@@ -80,14 +85,14 @@ def cli(args, count, threshold, persistent, summary, verbose):
             ['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
             [
                 len(durations),
-                round(median(durations), 2),
-                round(mean(durations), 2),
-                round(end - start, 2)
+                median(durations),
+                mean(durations),
+                end - start
             ]
         ]
 
-        print()
-        print(tabulate(table, tablefmt='psql', headers="firstrow"))
+        print(f'\n{url}')
+        print(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
     
 
 if __name__ == '__main__':
