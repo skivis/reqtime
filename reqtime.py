@@ -6,7 +6,7 @@ from click import command, option, argument, style, echo, UsageError
 from tabulate import tabulate
 
 
-SUPPORTED_HTTP_METHODS = ['GET', 'POST', 'EOD']
+SUPPORTED_HTTP_METHODS = ['GET', 'POST']
 
 
 def log(status: int, elapsed: float, threshold: int):
