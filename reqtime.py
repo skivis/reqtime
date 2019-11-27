@@ -32,6 +32,21 @@ def parse_args(args):
     return method.lower(), url
 
 
+def print_summary(title, durations, runtime):
+    table = [
+        ['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
+        [
+            len(durations),
+            median(durations),
+            mean(durations),
+            runtime
+        ]
+    ]
+
+    print(f'\n{title}')
+    print(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
+
+
 @command()
 @argument('args', nargs=-1, metavar='<METHOD> <URL>')
 @option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
@@ -40,7 +55,6 @@ def parse_args(args):
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
 @option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
 def cli(args, count, threshold, persistent, summary, verbose):
-    """Utility for measuring response times for http endpoints"""
     method, url = parse_args(args)
     durations = []
     
@@ -80,18 +94,7 @@ def cli(args, count, threshold, persistent, summary, verbose):
         if not summary or not durations:
             return
 
-        table = [
-            ['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
-            [
-                len(durations),
-                median(durations),
-                mean(durations),
-                end - start
-            ]
-        ]
-
-        print(f'\n{url}')
-        print(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
+        print_summary(url, durations, end - start)
     
 
 if __name__ == '__main__':
