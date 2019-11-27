@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='reqtime',
-    version='0.1.1',
+    version='0.1.2',
     py_modules=['reqtime'],
     include_package_data=True,
     install_requires=[
