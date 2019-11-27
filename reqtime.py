@@ -43,8 +43,8 @@ def print_summary(title, durations, runtime):
         ]
     ]
 
-    print(f'\n{title}')
-    print(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
+    echo(f'\n{title}')
+    echo(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
 
 
 @command()
