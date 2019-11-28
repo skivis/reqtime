@@ -53,14 +53,9 @@ def print_summary(title, durations, runtime):
 @option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
 @option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
-def cli(args, count, threshold, persistent, summary, verbose):
+def cli(args, count, threshold, persistent, summary):
     method, url = parse_args(args)
     durations = []
-    
-    if verbose:
-        import logging
-        logging.basicConfig(level=logging.DEBUG)
-        logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
     http = requests.Session() if persistent else requests
 
