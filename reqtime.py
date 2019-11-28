@@ -67,9 +67,9 @@ def cli(args, count, threshold, persistent, summary):
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
             durations.append(elapsed)
-            
+
             println(r.status_code, elapsed, threshold)
-            
+
             if count == 0:
                 continue
             index -= 1
@@ -81,13 +81,13 @@ def cli(args, count, threshold, persistent, summary):
         end = timer()
         if hasattr(http, 'close'):
             http.close()
-        
+
         if not summary or not durations:
             return
 
         runtime = end - start
         print_summary(url, durations, runtime)
-    
+
 
 if __name__ == '__main__':
     cli()
