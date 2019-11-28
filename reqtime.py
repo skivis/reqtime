@@ -52,7 +52,6 @@ def print_summary(title, durations, runtime):
 @option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
 @option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
-@option('-v', '--verbose', is_flag=True, help='Turn on DEBUG logging')
 def cli(args, count, threshold, persistent, summary):
     method, url = parse_args(args)
     durations = []
