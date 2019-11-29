@@ -1,4 +1,5 @@
 import math
+from time import sleep
 from statistics import median, mean
 
 import requests
@@ -51,8 +52,9 @@ def display_summary(url, durations):
 @option('-c', '--count', default=0, type=int, help='Number of requests to run, defaults to infinite')
 @option('-t', '--threshold', default=0, type=int, help='Threshold in ms for marking a request as slow')
 @option('-p', '--persistent', is_flag=True, help='Use a persistent http connection for all requests')
+@option('-d', '--delay', default=0, type=int, help='Milliseconds to wait between requests')
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
-def cli(args, count, threshold, persistent, summary):
+def cli(args, count, threshold, persistent, delay, summary):
     method, url = parse_args(args)
     durations = []
 
@@ -65,9 +67,10 @@ def cli(args, count, threshold, persistent, summary):
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
             durations.append(elapsed)
-
             println(r.status_code, elapsed, threshold)
 
+            if delay != 0 and index != 1:
+                sleep(delay / 1000)
             if count == 0:
                 continue
             index -= 1
