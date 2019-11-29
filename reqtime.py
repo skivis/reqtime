@@ -33,11 +33,6 @@ def println(status: int, elapsed: float, threshold: int):
 
 
 def display_summary(url, durations, runtime):
-    """
-    Display a table containing median and mean like statistics for the
-    requests.
-    Only called if --summary flag was passed.
-    """
     data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
             [len(durations), median(durations), mean(durations), runtime]]
 
