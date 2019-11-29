@@ -1,6 +1,5 @@
 import math
 from statistics import median, mean
-from timeit import default_timer as timer
 
 import requests
 from click import UsageError, command, option, argument, style
