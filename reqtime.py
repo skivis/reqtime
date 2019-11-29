@@ -39,9 +39,10 @@ def println(status: int, elapsed: float, threshold: int):
 
 
 def display_statistics(data, title='Summary'):
-    table = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)', 'P90 (ms)'],
-            [len(data), median(data), mean(data), min(data),
-             max(data), percentile(data, 50)]]
+    table = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)',
+              'P90 (ms)'],
+             [len(data), median(data), mean(data), min(data), max(data),
+              percentile(data, 90)]]
     print()
     print(f'{title}')
     print(tabulate(table, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
