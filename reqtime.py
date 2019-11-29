@@ -2,7 +2,7 @@ from statistics import median, mean
 from timeit import default_timer as timer
 
 import requests
-from click import UsageError, command, option, argument, style, echo
+from click import UsageError, command, option, argument, style
 from tabulate import tabulate
 
 
@@ -27,23 +27,23 @@ def println(status: int, elapsed: float, threshold: int):
     if threshold > 0:
         color = 'bright_green' if int(elapsed) <= threshold else 'bright_red'
         output = style(output, fg=color)
+    status = style(str(status), fg='bright_black')
+    millis = style('ms', fg='bright_black')
+    print(f'({status}) {output} {millis}')
 
-    echo(f'({style(str(status), fg="bright_black")}) {output} {style("ms", fg="bright_black")}')
 
+def display_summary(url, durations, runtime):
+    """
+    Display a table containing median and mean like statistics for the
+    requests.
+    Only called if --summary flag was passed.
+    """
+    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
+            [len(durations), median(durations), mean(durations), runtime]]
 
-def print_summary(title, durations, runtime):
-    table = [
-        ['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
-        [
-            len(durations),
-            median(durations),
-            mean(durations),
-            runtime
-        ]
-    ]
-
-    echo(f'\n{title}')
-    echo(tabulate(table, tablefmt='psql', headers="firstrow", floatfmt=".2f"))
+    print()
+    print(f'{url}')
+    print(tabulate(data, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
 
 
 @command()
@@ -85,7 +85,7 @@ def cli(args, count, threshold, persistent, summary):
             return
 
         runtime = end - start
-        print_summary(url, durations, runtime)
+        display_summary(url, durations, runtime)
 
 
 if __name__ == '__main__':
