@@ -14,10 +14,12 @@ def percentile(data, percentile):
     size = len(data)
     return sorted(data)[int(math.ceil((size * percentile) / 100)) - 1]
 
+def p90(data):
+    return percentile(data, 90)
 
 def parse_args(args):
     if not args or len(args) > 2:
-        raise UsageError('Incorrect arguments, either specify <METHOD> <url> or just <url>')
+        raise UsageError('Either specify <METHOD> <url> or just <url>')
     try:
         method, url = args
         if method not in SUPPORTED_HTTP_METHODS:
@@ -26,7 +28,6 @@ def parse_args(args):
         method = 'GET'
         url = args[0]
     return method.lower(), url
-
 
 def println(status: int, elapsed: float, threshold: int):
     output = f'{elapsed:9.2f}'
@@ -37,10 +38,9 @@ def println(status: int, elapsed: float, threshold: int):
     millis = style('ms', fg='bright_black')
     print(f'({status}) {output} {millis}')
 
-
 def display_statistics(data, title='Summary'):
     table = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)', 'P90 (ms)'],
-             [len(data), median(data), mean(data), min(data), max(data), percentile(data, 90)]]
+             [len(data), median(data), mean(data), min(data), max(data), p90(data)]]
     print()
     print(f'{title}')
     print(tabulate(table, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
@@ -65,8 +65,10 @@ def cli(args, count, threshold, persistent, delay, summary):
         while True:
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
-            data.append(elapsed)
             println(r.status_code, elapsed, threshold)
+
+            if summary:
+                data.append(elapsed)
 
             if delay != 0 and index != 1:
                 sleep(delay / 1000)
@@ -82,10 +84,8 @@ def cli(args, count, threshold, persistent, delay, summary):
         if hasattr(http, 'close'):
             http.close()
 
-        if not summary and not data:
-            return
-
-        display_statistics(data, title=url)
+        if summary and data:
+            display_statistics(data, title=url)
 
 
 if __name__ == '__main__':
