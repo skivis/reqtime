@@ -57,7 +57,7 @@ def display_statistics(data, title='Summary'):
 @option('-s', '--summary', is_flag=True, help='Output summary when done (or stopped)')
 def cli(args, count, threshold, persistent, delay, summary):
     method, url = parse_args(args)
-    durations = []
+    data = []
 
     http = requests.Session() if persistent else requests
 
@@ -67,7 +67,7 @@ def cli(args, count, threshold, persistent, delay, summary):
         while True:
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
-            durations.append(elapsed)
+            data.append(elapsed)
             println(r.status_code, elapsed, threshold)
 
             if delay != 0 and index != 1:
@@ -84,10 +84,10 @@ def cli(args, count, threshold, persistent, delay, summary):
         if hasattr(http, 'close'):
             http.close()
 
-        if not summary and not durations:
+        if not summary and not data:
             return
 
-        display_statistics(durations, title=url)
+        display_statistics(data, title=url)
 
 
 if __name__ == '__main__':
