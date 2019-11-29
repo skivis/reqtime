@@ -1,3 +1,4 @@
+import math
 from statistics import median, mean
 from timeit import default_timer as timer
 
@@ -7,6 +8,11 @@ from tabulate import tabulate
 
 
 SUPPORTED_HTTP_METHODS = ['GET', 'POST']
+
+
+def percentile(data, percentile):
+    size = len(data)
+    return sorted(data)[int(math.ceil((size * percentile) / 100)) - 1]
 
 
 def parse_args(args):
@@ -32,10 +38,11 @@ def println(status: int, elapsed: float, threshold: int):
     print(f'({status}) {output} {millis}')
 
 
-def display_summary(url, durations, runtime):
-    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Runtime (sec)'],
-            [len(durations), median(durations), mean(durations), runtime]]
-
+def display_summary(url, durations):
+    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)',
+             'P90 (ms)'],
+            [len(durations), median(durations), mean(durations),
+             min(durations), max(durations), percentile(durations, 90)]]
     print()
     print(f'{url}')
     print(tabulate(data, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
@@ -56,7 +63,6 @@ def cli(args, count, threshold, persistent, summary):
     try:
         func = getattr(http, method)
         index = count
-        start = timer()
         while True:
             r = func(url)
             elapsed = r.elapsed.total_seconds() * 1000
@@ -72,15 +78,13 @@ def cli(args, count, threshold, persistent, summary):
     except KeyboardInterrupt:
         pass
     finally:
-        end = timer()
         if hasattr(http, 'close'):
             http.close()
 
         if not summary or not durations:
             return
 
-        runtime = end - start
-        display_summary(url, durations, runtime)
+        display_summary(url, durations)
 
 
 if __name__ == '__main__':
