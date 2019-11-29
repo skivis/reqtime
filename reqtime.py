@@ -38,13 +38,13 @@ def println(status: int, elapsed: float, threshold: int):
     print(f'({status}) {output} {millis}')
 
 
-def display_summary(url, durations):
-    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)', 'P90 (ms)'],
-            [len(durations), median(durations), mean(durations), min(durations),
-             max(durations), percentile(durations, 90)]]
+def display_statistics(data, title='Summary'):
+    table = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)', 'P90 (ms)'],
+            [len(data), median(data), mean(data), min(data),
+             max(data), percentile(data, 50)]]
     print()
-    print(f'{url}')
-    print(tabulate(data, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
+    print(f'{title}')
+    print(tabulate(table, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
 
 
 @command()
@@ -71,6 +71,7 @@ def cli(args, count, threshold, persistent, delay, summary):
 
             if delay != 0 and index != 1:
                 sleep(delay / 1000)
+
             if count == 0:
                 continue
             index -= 1
@@ -82,10 +83,10 @@ def cli(args, count, threshold, persistent, delay, summary):
         if hasattr(http, 'close'):
             http.close()
 
-        if not summary or not durations:
+        if not summary and not durations:
             return
 
-        display_summary(url, durations)
+        display_statistics(durations, title=url)
 
 
 if __name__ == '__main__':
