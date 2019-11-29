@@ -38,10 +38,9 @@ def println(status: int, elapsed: float, threshold: int):
 
 
 def display_summary(url, durations):
-    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)',
-             'P90 (ms)'],
-            [len(durations), median(durations), mean(durations),
-             min(durations), max(durations), percentile(durations, 90)]]
+    data = [['# Reqs', 'Median (ms)', 'Mean (ms)', 'Min (ms)', 'Max (ms)', 'P90 (ms)'],
+            [len(durations), median(durations), mean(durations), min(durations),
+             max(durations), percentile(durations, 90)]]
     print()
     print(f'{url}')
     print(tabulate(data, headers='firstrow', floatfmt='.2f', tablefmt='psql'))
